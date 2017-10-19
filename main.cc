@@ -24,78 +24,76 @@ class Board {
 //
 //                  Constructor : creates array with queens
 //--------------------------------------------------------------------------------
-		Board() {
-			queens = new int[N];
-            srand((unsigned)time(0));
-				for(int j=0; j<N; j++) {
-				queens[j]=(rand()%N);
-			}
+	Board() {
+		queens = new int[N];
+                srand((unsigned)time(0));
+		for(int j=0; j<N; j++) {
+			queens[j]=(rand()%N);
 		}
+	}
 
 //------------------------------------Print---------------------------------------
 //
 //                      This function prints board.
 //--------------------------------------------------------------------------------
-		void Print() {
-			for(int i=0; i<N; i++) {
-				for(int j=0; j<queens[i]; j++) {
-					cout << "| ";
-				}
-				cout << "|Q";
-				for(int j=0; j<N-queens[i]-1; j++) {
-					cout << "| ";
-				}
-				cout << "|\n";
-			}
-			cout << "Fitness: " << Fitness() << "\n\n";
+	void Print() {
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<queens[i]; j++)
+				cout << "| ";
+			cout << "|Q";
+			for(int j=0; j<N-queens[i]-1; j++)
+				cout << "| ";
+			cout << "|\n";
 		}
+		cout << "Fitness: " << Fitness() << "\n\n";
+	}
 
 //---------------------------------- Fitness --------------------------------------
 //
 //                        This function counts fitness.
 //----------------------------------------------------------------------------------
-		int Fitness() {
-			int colCount[N];
-			int upperDiagCount[(2*N)-1];
-			int lowerDiagCount[(2*N)-1];
+	int Fitness() {
+		int colCount[N];
+		int upperDiagCount[(2*N)-1];
+		int lowerDiagCount[(2*N)-1];
 
-            for(int i=0; i<N; i++)
-				colCount[i] = 0;
-            for(int i=0; i<(2*N-1); i++){
-				upperDiagCount[i] = 0;
-				lowerDiagCount[i] = 0;
-            }
+        	for(int i=0; i<N; i++)
+			colCount[i] = 0;
+	        for(int i=0; i<(2*N-1); i++){
+			upperDiagCount[i] = 0;
+			lowerDiagCount[i] = 0;
+        	}
 
-			for(int i=0; i<N; i++) {
-				colCount[queens[i]] += 1;
-				upperDiagCount[queens[i]+i]+=1;
-				lowerDiagCount[(N-queens[i])+i-1]+=1;
-			}
-			int fitness = 0;
-			for(int i=0; i<2*N-1; i++) {
-				if(i<N) {
-					fitness += ((colCount[i]-1)*colCount[i])/2;
-				}
-				fitness += ((upperDiagCount[i]-1)*upperDiagCount[i])/2;
-				fitness += ((lowerDiagCount[i]-1)*lowerDiagCount[i])/2;
-			}
-			return fitness;
+		for(int i=0; i<N; i++) {
+			colCount[queens[i]] += 1;
+			upperDiagCount[queens[i]+i]+=1;
+			lowerDiagCount[(N-queens[i])+i-1]+=1;
 		}
+		int fitness = 0;
+		for(int i=0; i<2*N-1; i++) {
+			if(i<N) 
+				fitness += ((colCount[i]-1)*colCount[i])/2;
+				
+			fitness += ((upperDiagCount[i]-1)*upperDiagCount[i])/2;
+			fitness += ((lowerDiagCount[i]-1)*lowerDiagCount[i])/2;
+		}
+	return fitness;
+	}
 
 //------------------------------------Mutate---------------------------------------
 //
 //      This function mutates a population's bits dependent on the mutation rate
 //----------------------------------------------------------------------------------
-		void Mutate() {
-            int mutationCount = max(min((int)floor(MutationRate*N), N), 1);
-			for(int i=0; i<mutationCount; i++) {
-				//random position
-				int j=(rand()%N);
-				//random value
-				char v =(rand()%N);
-				queens[j]=v;
-			}
-}
+	void Mutate() {
+        	int mutationCount = max(min((int)floor(MutationRate*N), N), 1);
+		for(int i=0; i<mutationCount; i++) {
+			//random position
+			int j=(rand()%N);
+			//random value
+			char v =(rand()%N);
+			queens[j]=v;
+		}
+	}
 
 //---------------------------------- Mate ---------------------------------------
 //
@@ -104,16 +102,15 @@ class Board {
 //                Here a pair of parents produces one children.
 //-------------------------------------------------------------------------------
         Board Mate(Board Parent) {
-			Board Child;
-			// random position between 1 and N-1
-			int r=(rand()%(N-1))+1;
-			for(int i=0; i<r; i++) {
-				Child.queens[i]=queens[i];
-			}
-			for(int i=r; i<N; i++) {
-				Child.queens[i]=Parent.queens[i];
-			}
-			return Child;
+		Board Child;
+		// random position between 1 and N-1
+		int r=(rand()%(N-1))+1;
+		for(int i=0; i<r; i++) 
+			Child.queens[i]=queens[i];
+		for(int i=r; i<N; i++) 
+			Child.queens[i]=Parent.queens[i];
+			
+		return Child;
         }
 
 };
@@ -127,9 +124,8 @@ Board* Population;
 //----------------------------------------------------------------------------------------
 void Initialization() {
 	Population = new Board[PopSize];
-	for(int i=0; i<PopSize; i++) {
+	for(int i=0; i<PopSize; i++) 
 		Population[i] = Board();
-	}
 }
 
 //--------------------------------- sortPopulation ---------------------------------------
@@ -169,17 +165,16 @@ void sortPopulation(int Left, int Right) {
 //            worst individual from the current population with the
 //              best one from the previous generation.
 //----------------------------------------------------------------------------------
-void Elitist(int *bestCon, int best[])
-{
-  if ( Population[0].Fitness() >= *bestCon ){
-    for(int i=0; i<N;i++)
-        Population[PopSize-1].queens[i] = best[i];
-  }
-  else{
-    *bestCon=Population[0].Fitness();
-    for(int i=0; i<N;i++)
-        best[i] = Population[0].queens[i];
-  }
+void Elitist(int *bestCon, int best[]){
+  	if ( Population[0].Fitness() >= *bestCon ){
+    		for(int i=0; i<N;i++)
+        		Population[PopSize-1].queens[i] = best[i];
+  	}
+  	else{
+    		*bestCon=Population[0].Fitness();
+    		for(int i=0; i<N;i++)
+        		best[i] = Population[0].queens[i];
+ 	}	
 }
 
 //--------------------------------------- GA ---------------------------------------
@@ -190,14 +185,14 @@ void Elitist(int *bestCon, int best[])
 //------------------------------------------------------------------------------------
 int GA() {
 	int numberOfsteps=0;
-    int best[N], best1[N];
+    	int best[N], best1[N];
 	int lastFitness = -1,bestCon=-1, bestCon1=-1;
 	while(true) {
-        //values are needed for elitist selection
-        if(numberOfsteps%2!=0 and bestCon1>lastFitness)
-                bestCon1=lastFitness;
-        if(numberOfsteps%2==0 and bestCon>lastFitness)
-                bestCon=lastFitness;
+        	//values are needed for elitist selection
+        	if(numberOfsteps%2!=0 and bestCon1>lastFitness)
+                	bestCon1=lastFitness;
+        	if(numberOfsteps%2==0 and bestCon>lastFitness)
+                	bestCon=lastFitness;
 
 		// sort population by fitness level
 		sortPopulation(0, PopSize-1);
@@ -206,9 +201,9 @@ int GA() {
 			lastFitness = smallestFitness;
 			cout << "Fitness: " << smallestFitness << endl;
 		}
-		if(smallestFitness == 0) {
+		if(smallestFitness == 0) 
 			break;
-		}
+		
 
 		// crossover
 		int cut = min(PopSize - 1, max((int)floor(PopSize*SurvivalRate), 1));
@@ -221,36 +216,36 @@ int GA() {
 
         //values are needed for elitist selection
         if(numberOfsteps==0){
-            bestCon=lastFitness;
-            bestCon1=lastFitness;
-            for(int i=0; i<N;i++){
-                best1[i]=Population[0].queens[i];
-                best[i]=Population[0].queens[i];
-            }
+     		bestCon=lastFitness;
+        	bestCon1=lastFitness;
+       		for(int i=0; i<N;i++){
+                	best1[i]=Population[0].queens[i];
+                	best[i]=Population[0].queens[i];
+           	}	
         }
         if(numberOfsteps%2==0 and bestCon1==lastFitness){
-            for(int i=0; i<N;i++)
-                best[i]=Population[0].queens[i];
-		}
-		if(numberOfsteps%2!=0 and bestCon==lastFitness){
-            for(int i=0; i<N;i++)
-                best1[i]=Population[0].queens[i];
+           	for(int i=0; i<N;i++)
+                	best[i]=Population[0].queens[i];
+	}	
+	if(numberOfsteps%2!=0 and bestCon==lastFitness){
+        	for(int i=0; i<N;i++)
+                	best1[i]=Population[0].queens[i];
         }
 
         //Elitist selection
         if(numberOfsteps>0){
-            if(numberOfsteps%2!=0)
-                Elitist(&bestCon1, best);
-            else
-                Elitist(&bestCon, best1);
-		}
+            	if(numberOfsteps%2!=0)
+                	Elitist(&bestCon1, best);
+        	else
+                	Elitist(&bestCon, best1);
+	}
 
         // mutate every board with the mutation rate
         for(int i=0; i<PopSize; i++) {
-			Population[i].Mutate();
-    }
-		// now that we have a new generation increment the number of moves
-		numberOfsteps++;
+		Population[i].Mutate();
+   	}
+	// now that we have a new generation increment the number of moves
+	numberOfsteps++;
 	}
 
 return numberOfsteps;
